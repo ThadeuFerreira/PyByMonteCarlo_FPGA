@@ -1,0 +1,20 @@
+#correto
+ g++ -c *.cpp -I/home/thadeu/Final_OPENCL/*.cpp -I/home/thadeu/Volatilidade/carlos/exm_opencl_hello_world_x64_linux/common/inc -L/opt/intelFPGA/16.1/hld/board/s5phq/linux64/lib -L/opt/intelFPGA/16.1/hld/host/linux64/lib -Wl,--no-as-needed -lalteracl -lalterahalmmd -laltera_s5phq_mmd -lelf -I/opt/intelFPGA/16.1/hld/host/include -lOpenCL
+
+ g++ -o host *.o -I/home/caosjr/Documents/KernelsArtigo/kernel2/*.cpp -I/home/caosjr/libOpenCLAlteraApp/common/inc/ -L/opt/intelFPGA/16.1/hld/board/s5phq/linux64/lib -L/opt/intelFPGA/16.1/hld/host/linux64/lib -Wl,--no-as-needed -lalteracl -lalterahalmmd -laltera_s5phq_mmd -lelf -I/opt/intelFPGA/16.1/hld/host/include -lOpenCL
+
+
+g++ -o host *.o -I/home/thadeu/Final_OPENCL/hello_world/hello_world/host/src*.cpp -I/home/thadeu/Final_OPENCL/hello_world/common/inc -L/opt/intelFPGA/16.1/hld/board/s5phq/linux64/lib -L/opt/intelFPGA/16.1/hld/host/linux64/lib -Wl,--no-as-needed -lalteracl -lalterahalmmd -laltera_s5phq_mmd -lelf -I/opt/intelFPGA/16.1/hld/host/include -lOpenCL
+
+g++ -c *.cpp -I/home/thadeu/Final_OPENCL/hello_world/common/inc -L/opt/intelFPGA/16.1/hld/board/s5phq/linux64/lib -L/opt/intelFPGA/16.1/hld/host/linux64/lib -Wl,--no-as-needed -lalteracl -lalterahalmmd -laltera_s5phq_mmd -lelf -I/opt/intelFPGA/16.1/hld/host/include -lOpenCL
+
+
+
+aoc -v --board s5phq_a7 volatility_kernel.cl -o volatility_kernel.aocx
+
+aoc -march=emulator -v --board s5phq_a7 volatility_kernel.cl -o volatility_kernel.aocx
+
+CL_CONTEXT_EMULATOR_DEVICE_ALTERA=1 ./host
+
+
+/home/thadeu/Volatilidade/carlos/exm_opencl_hello_world_x64_linux/common/inc
