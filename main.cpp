@@ -73,8 +73,9 @@ using namespace aocl_utils;
 
 #define AOCL_ALIGNMENT 64
 //#define SIZE 1024*1024*1024
-#define SIZE 1024*1024*2
-#define PRECOMPILED_BINARY "well_kernel_emulation"
+#define SIZE 1024*1024*256
+//#define PRECOMPILED_BINARY "well_kernel_emulation"
+#define PRECOMPILED_BINARY "well_kernel"
 
 static cl_context my_context;
 
@@ -162,6 +163,7 @@ int main(int argc, char *argv[] )
     uint seed = 0;
     uint init = 0;
     int size = SIZE;
+    double pi_accum;
 
     status = clSetKernelArg(well_kernel, 0, sizeof(cl_mem), &result_buffer);
     checkError(status, "Failed to set kernel arg 0");
@@ -218,14 +220,14 @@ int main(int argc, char *argv[] )
            }   
         } 
         free(data);
-        printf("passou 1\n");
+       
         cl_mem pi_result_buffer =  clCreateBuffer(my_context,
                                        CL_MEM_WRITE_ONLY | CL_MEM_ALLOC_HOST_PTR,
                                        sizeof(float),
                                        NULL,
                                        &status);
         checkError(status, "Create Buffer failed");
-        printf("passou 2\n");
+        
 
         void *rand_input = NULL;
         posix_memalign(&rand_input, AOCL_ALIGNMENT,sizeof(float)*SIZE);
@@ -236,7 +238,7 @@ int main(int argc, char *argv[] )
                                       rand_input,
                                      &status);
         checkError(status, "Create Buffer failed");
-        printf("passou 3.5\n");
+        
         free(rand_input);
         free(output);        
 
@@ -249,9 +251,9 @@ int main(int argc, char *argv[] )
         
         status = clEnqueueNDRangeKernel(queue, pi_kernel, 1, NULL, gSize, wgSize, 0, NULL, NULL);
         checkError(status, "Failed to launch kernel");
-        printf("passou 4\n");
+        
         status = clFinish(queue);
-        printf("passou 5\n");                           
+                                  
         void *pi_output = NULL;
         posix_memalign(&pi_output, AOCL_ALIGNMENT, sizeof(float)); // isso é importante
         status = clEnqueueReadBuffer(queue,
@@ -264,26 +266,23 @@ int main(int argc, char *argv[] )
                                     NULL,
                                     NULL);
         checkError(status, "Read buffer fail");
-        printf("passou 6\n");
-        float *pi_accum = (float *)pi_output;
+        
+        float *pi_temp = (float *)pi_output;
         
         
-        
-        printf("final pi = %.9f\n", *pi_accum);
-        printf("Total Hard = %.9f\n", accum);
-        printf("Total Box = %.9f\n", accum2);
-                
-        
+        pi_accum += *pi_temp;                 
+        printf("Local pi = %.10f | Temp pi = %.10f\n", *pi_temp, pi_accum/(j+1));
         //free(box_result_buffer);
         //free(final_size_buffer);
         clReleaseMemObject(input_buffer); 
         clReleaseMemObject(pi_result_buffer);     
-        printf("passou 7\n"); 
+        
         init = 1;  
         status = clSetKernelArg(well_kernel, 4, sizeof(cl_uint), &init);
         checkError(status, "Failed to set kernel arg 4");
-        printf("passou 8\n");
+        
     }
+    printf("FINAL PI = %.10f\n", pi_accum/(REPEAT));
     clock_t end2 = clock();
     double time_spent2 = (double)(end2 - begin2) / CLOCKS_PER_SEC;
     //printf("Total Hard = %.9f\n", accum);

@@ -1,7 +1,6 @@
 echo "Iniciando Bateria"
-for i in {1..8}
+for i in {1..200}
 do
-  var =  $(/usr/bin/time -v ./host $i)
-  echo $var >> test_host.txt
-done  
+  /usr/bin/time -v -o time_"$i".txt ./host $i > output"$i".file
+done
 echo "Finished"
