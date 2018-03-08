@@ -34,3 +34,7 @@ lib/bootstrap/
 lib/d3/
 
 results/
+
+*.rpt
+
+*.log
